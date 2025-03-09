@@ -243,7 +243,7 @@ async function renderLEDEffect(effect) {
   if (effects[effect] && activeEffect != effect) {
     childProcess ? childProcess.kill() : null;
     activeEffect = effect;
-    childProcess = spawn("sudo node", ["rainbow.js"])
+    childProcess = spawn("sudo", ["node", "rainbow.js"])
   } else if (effects[effect] && activeEffect == effect) {
     childProcess.kill()
     animations["Fade"]();
