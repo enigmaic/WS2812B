@@ -6,12 +6,6 @@ const channel = ws281x(NUM_LEDS, { stripType: 'ws2812' });
 
 var pixelData = channel.array;
 
-// ---- trap the SIGINT and reset before exit
-process.on('SIGINT', function () {
-  ws281x.reset();
-  process.nextTick(function () { process.exit(0); });
-});
-
 
 // ---- animation-loop
 var offset = 0;
