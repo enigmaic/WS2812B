@@ -251,8 +251,8 @@ async function renderLEDEffect(effect) {
 
   if (effects[effect] && activeEffect != effect) {
     activeFlag = true;
-    await effects[effect]();
     activeEffect = effect
+    await effects[effect]();
   } else if (effects[effect] && activeEffect == effect) {
     activeFlag = false;
     animations["Fade"]();
