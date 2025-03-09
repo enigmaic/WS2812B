@@ -5,7 +5,7 @@ const fs = require('fs');
 const app = express();
 const path = require('path');
 const configFile = 'config.json';
-const { spawn } = require('child_process');
+
 
 
 
@@ -226,8 +226,6 @@ async function renderLEDs(colors, preset, anim) {
 
 }
 
-
-let childProcess;
 async function renderLEDEffect(effect) {
   if (channel.brightness == 0) {
     for (var i = 0; i < NUM_LEDS; i++) {
@@ -236,16 +234,26 @@ async function renderLEDEffect(effect) {
     channel.brightness = 255;
   }
 
-  effects = {
-    "Rainbow": true
-  }
 
+  effects = {
+    "Rainbow": async function () {
+      let offset = 0;
+      activeFlag = setInterval(function () {
+        for (var i = 0; i < NUM_LEDS; i++) {
+          colorArray[i] = colorwheel((offset + i) % 256);
+        }
+      
+        offset = (offset + 1) % 256;
+        ws281x.render(pixelData);
+      }, 1000 / 30);
+    }
+  };
 
   if (effects[effect] && activeEffect != effect) {
     activeEffect = effect;
-    childProcess = new spawn("node", ["rainbow.js"])
+    await effects[effect]();
   } else if (effects[effect] && activeEffect == effect) {
-    childProcess.kill();
+    clearInterval(activeFlag)
     animations["Fade"]();
   }
 }
