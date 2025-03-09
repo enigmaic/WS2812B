@@ -237,15 +237,14 @@ async function renderLEDEffect(effect) {
     effects = {
     "Rainbow": async function () {
       let offset = 0;
-      let pixelData = new Uint32Array(NUM_LEDS);
 
       while (activeFlag) {
         for (let i = 0; i < NUM_LEDS; i++) {
-          pixelData[i] = colorwheel((offset + i) % 256);
+          colorArray[i] = colorwheel((offset + i) % 256);
         }
 
         offset = (offset + 1) % 256;
-        ws281x.render(pixelData);
+        ws281x.render();
         await wait(50); 
       }
     }
