@@ -102,11 +102,11 @@ app.post('/clearPreset', (req, res) => {
 app.get('/presets', (req, res) => {
     res.json(presets);
 });
-
+var activeFlag = true;
 var animations = {}
 var effects = {}
 var activeEffect = null;
-var activeFlag = true;
+
 renderLEDs(null, null)
 renderLEDEffect(null);
 
