@@ -234,7 +234,7 @@ async function renderLEDEffect(effect) {
   }
 
 
-  const effects = {
+    effects = {
     "Rainbow": async function () {
       let offset = 0;
       let pixelData = new Uint32Array(NUM_LEDS);
