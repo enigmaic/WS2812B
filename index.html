@@ -294,7 +294,7 @@
                     data.forEach((effect) => {
                         const listItem = document.createElement('li');
                         const button = document.createElement('button');
-                        button.textContent = effect.name;
+                        button.textContent = effect;
                         button.addEventListener('click', () => fetch("/effect/" + effect));
                         listItem.appendChild(button);
                         button.style.marginBottom = '10px';

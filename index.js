@@ -7,7 +7,7 @@ const path = require('path');
 const configFile = 'config.json';
 
 const { spawn } = require('child_process');
-
+let childProcess;
 
 app.use(bodyParser.json());
 
@@ -137,6 +137,7 @@ app.get("/effect/:effect", async (req, res) => {
 
 
 async function renderLEDs(colors, preset, anim) {
+  childProcess ? childProcess.kill() : null;
   let [red, green, blue] = (preset ? [0, 0, 0] : colors ? colors : [0, 0, 0])
 
   if (channel.brightness == 0) {
@@ -226,7 +227,7 @@ async function renderLEDs(colors, preset, anim) {
 
 }
 
-let childProcess;
+
 async function renderLEDEffect(effect) {
   if (channel.brightness == 0) {
     for (var i = 0; i < NUM_LEDS; i++) {
@@ -247,6 +248,7 @@ async function renderLEDEffect(effect) {
   } else if (effects[effect] && activeEffect == effect) {
     childProcess.kill()
     activeEffect = null;
+    await wait(70)
     animations["Fade"]();
   }
 }
