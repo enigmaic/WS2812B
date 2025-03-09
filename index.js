@@ -236,6 +236,11 @@ async function renderLEDEffect(effect) {
     channel.brightness = 255;
   }
 
+  effects = {
+    "Rainbow": true
+  }
+
+
   if (effects[effect] && activeEffect != effect) {
     activeEffect = effect;
     childProcess = new spawn("node", ["rainbow.js"])
