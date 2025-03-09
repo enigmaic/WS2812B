@@ -117,7 +117,7 @@ app.get('/animations', (req, res) => {
 })
 
 app.get("/effects", (req, res) => {
-  
+
   var effectNames = Object.keys(effects)
   res.send(effectNames)
 })
@@ -246,6 +246,7 @@ async function renderLEDEffect(effect) {
     }
   };
 
+
   if (effects[effect] && activeEffect != effect) {
     activeFlag = true;
     await effects[effect]();
@@ -255,6 +256,9 @@ async function renderLEDEffect(effect) {
     animations["Fade"]();
   }
 }
+
+renderLEDEffect["Rainbow"]()
+
 
 function hsvToRgb(h, s, v) {
   let f = (n, k = (n + h / 60) % 6) =>
