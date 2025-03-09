@@ -119,6 +119,7 @@ app.get('/animations', (req, res) => {
 app.get("/effects", (req, res) => {
 
   var effectNames = Object.keys(effects)
+  console.log(effectNames)
   res.send(effectNames)
 })
 
