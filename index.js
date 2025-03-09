@@ -249,8 +249,13 @@ async function renderLEDEffect(effect) {
   } else if (effects[effect] && activeEffect == effect) {
     childProcess.kill()
     activeEffect = null;
-    await wait(70)
-    animations["Fade"]();
+    fetch('/applyPreset', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name: "Off", anim: "Start"}),
+  })
   }
 }
 
