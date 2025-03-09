@@ -6,7 +6,7 @@ const app = express();
 const path = require('path');
 const configFile = 'config.json';
 
-
+const { spawn } = require('child_process');
 
 
 app.use(bodyParser.json());
@@ -226,6 +226,7 @@ async function renderLEDs(colors, preset, anim) {
 
 }
 
+let childProcess;
 async function renderLEDEffect(effect) {
   if (channel.brightness == 0) {
     for (var i = 0; i < NUM_LEDS; i++) {
@@ -236,38 +237,20 @@ async function renderLEDEffect(effect) {
 
 
   effects = {
-    "Rainbow": async function () {
-      let offset = 0;
-      activeFlag = setInterval(function () {
-        for (var i = 0; i < NUM_LEDS; i++) {
-          colorArray[i] = colorwheel((offset + i) % 256);
-        }
-      
-        offset = (offset + 1) % 256;
-        ws281x.render();
-      }, 1000 / 30);
-    }
+    "Rainbow": true
   };
 
   if (effects[effect] && activeEffect != effect) {
+    childProcess.kill()
     activeEffect = effect;
-    await effects[effect]();
+    childProcess = spawn("node", ["rainbow.js"])
   } else if (effects[effect] && activeEffect == effect) {
-    clearInterval(activeFlag)
+    childProcess.kill()
     animations["Fade"]();
   }
 }
 
-function colorwheel(pos) {
-  pos = 255 - pos;
-  if (pos < 85) { return rgb2Int(255 - pos * 3, 0, pos * 3); }
-  else if (pos < 170) { pos -= 85; return rgb2Int(0, pos * 3, 255 - pos * 3); }
-  else { pos -= 170; return rgb2Int(pos * 3, 255 - pos * 3, 0); }
-}
 
-function rgb2Int(r, g, b) {
-  return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
-}
 
 app.post('/addSegment', async (req, res) => {
     const { red, green, blue, startDiode, endDiode } = req.body;
