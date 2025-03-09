@@ -233,25 +233,27 @@ async function renderLEDEffect(effect) {
     channel.brightness = 255;
   }
 
-  effects = {
-    "Rainbow": async function() {
-      let hue = 0;
-      while (activeFlag) {  
+
+  const effects = {
+    "Rainbow": async function () {
+      let offset = 0;
+      let pixelData = new Uint32Array(NUM_LEDS);
+
+      while (activeFlag) {
         for (let i = 0; i < NUM_LEDS; i++) {
-          let hueOffset = (hue + (i * 360 / NUM_LEDS)) % 360;
-          colorArray[i] = hsvToRgb(hueOffset, 1, 1);
+          pixelData[i] = colorwheel((offset + i) % 256);
         }
-        hue = (hue + 1) % 360; 
-        await wait(50)
-        ws281x.render();
+
+        offset = (offset + 1) % 256;
+        ws281x.render(pixelData);
+        await wait(50); 
       }
     }
   };
 
-
   if (effects[effect] && activeEffect != effect) {
     activeFlag = true;
-    activeEffect = effect
+    activeEffect = effect;
     await effects[effect]();
   } else if (effects[effect] && activeEffect == effect) {
     activeFlag = false;
@@ -259,11 +261,15 @@ async function renderLEDEffect(effect) {
   }
 }
 
+function colorwheel(pos) {
+  pos = 255 - pos;
+  if (pos < 85) { return rgb2Int(255 - pos * 3, 0, pos * 3); }
+  else if (pos < 170) { pos -= 85; return rgb2Int(0, pos * 3, 255 - pos * 3); }
+  else { pos -= 170; return rgb2Int(pos * 3, 255 - pos * 3, 0); }
+}
 
-function hsvToRgb(h, s, v) {
-  let f = (n, k = (n + h / 60) % 6) =>
-    Math.round((v - v * s * Math.max(Math.min(k, 4 - k, 1), 0)) * 255);
-  return (f(5) << 16) | (f(3) << 8) | f(1);
+function rgb2Int(r, g, b) {
+  return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
 app.post('/addSegment', async (req, res) => {
