@@ -244,7 +244,7 @@ async function renderLEDEffect(effect) {
         }
       
         offset = (offset + 1) % 256;
-        ws281x.render(pixelData);
+        ws281x.render();
       }, 1000 / 30);
     }
   };
