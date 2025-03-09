@@ -138,6 +138,7 @@ app.get("/effect/:effect", async (req, res) => {
 
 async function renderLEDs(colors, preset, anim) {
   childProcess ? childProcess.kill() : null;
+  activeEffect = null;
   let [red, green, blue] = (preset ? [0, 0, 0] : colors ? colors : [0, 0, 0])
 
   if (channel.brightness == 0) {
