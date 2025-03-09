@@ -249,13 +249,6 @@ async function renderLEDEffect(effect) {
   } else if (effects[effect] && activeEffect == effect) {
     childProcess.kill()
     activeEffect = null;
-    fetch('/applyPreset', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name: "Off", anim: "Start"}),
-  })
   }
 }
 
