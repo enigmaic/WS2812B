@@ -108,6 +108,7 @@ var effects = {}
 var activeEffect = null;
 var activeFlag = true;
 renderLEDs(null, null)
+renderLEDEffect(null);
 
 app.get('/animations', (req, res) => {
   var animationNames = Object.keys(animations)
