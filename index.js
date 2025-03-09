@@ -104,6 +104,9 @@ app.get('/presets', (req, res) => {
 });
 
 var animations = {}
+var effects = {}
+var activeEffect = null;
+var activeFlag = true;
 renderLEDs(null, null)
 
 app.get('/animations', (req, res) => {
@@ -113,7 +116,21 @@ app.get('/animations', (req, res) => {
   res.send(animationNames)
 })
 
-console.log(Object.keys(animations))
+app.get("/effects", (req, res) => {
+  var effectNames = Object.keys(effects)
+  res.send(animationNames)
+})
+
+app.get("/effect/:effect", async (req, res) => {
+  let effect = req.params.effect
+  if (effects[effect]) {
+    animations["Fade"]();
+    await wait(1000)
+    renderLEDEffect(effect)
+    res.sendStatus(200)
+  }
+})
+
 
 async function renderLEDs(colors, preset, anim) {
   let [red, green, blue] = (preset ? [0, 0, 0] : colors ? colors : [0, 0, 0])
@@ -205,6 +222,44 @@ async function renderLEDs(colors, preset, anim) {
 
 }
 
+async function renderLEDEffect(effect) {
+  if (channel.brightness == 0) {
+    for (var i = 0; i < NUM_LEDS; i++) {
+      colorArray[i] = 0;
+    }
+    channel.brightness = 255;
+  }
+
+  effects = {
+    "Rainbow": async function() {
+      let hue = 0;
+      while (activeFlag) {  
+        for (let i = 0; i < NUM_LEDS; i++) {
+          let hueOffset = (hue + (i * 360 / NUM_LEDS)) % 360;
+          colorArray[i] = hsvToRgb(hueOffset, 1, 1);
+        }
+        channel.render(); 
+        hue = (hue + 1) % 360; 
+        await wait(50)
+      }
+    }
+  };
+
+  if (effects[effect] && activeEffect != effect) {
+    activeFlag = true;
+    await effects[effect]();
+    activeEffect = effect
+  } else if (effects[effect] && activeEffect == effect) {
+    activeFlag = false;
+    animations["Fade"]();
+  }
+}
+
+function hsvToRgb(h, s, v) {
+  let f = (n, k = (n + h / 60) % 6) =>
+    Math.round((v - v * s * Math.max(Math.min(k, 4 - k, 1), 0)) * 255);
+  return (f(5) << 16) | (f(3) << 8) | f(1);
+}
 
 app.post('/addSegment', async (req, res) => {
     const { red, green, blue, startDiode, endDiode } = req.body;

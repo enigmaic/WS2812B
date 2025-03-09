@@ -70,6 +70,11 @@
     <ul id="presetList"></ul>
 
 
+    <h2>Effects</h2>
+
+    <ul id="effectList"></ul>
+
+
     <h2>Automated Shut Off</h2>
     <input type="time" id="shutoff" name="shutoff" step="60">
 
@@ -238,7 +243,6 @@
             }
         }
 
-// Function to fetch and display the list of presets
         function getPresetList() {
             fetch('/presets')
                 .then((response) => response.json())
@@ -278,6 +282,28 @@
               })
 
             })
+        }
+
+        function getEffects() {
+            fetch('/effects')
+                .then((response) => response.json())
+                .then((data) => {
+                    const presetList = document.getElementById('effectList');
+                    presetList.innerHTML = '';
+
+                    data.forEach((effect) => {
+                        const listItem = document.createElement('li');
+                        const button = document.createElement('button');
+                        button.textContent = effect.name;
+                        button.addEventListener('click', () => fetch("/effect/" + effect));
+                        listItem.appendChild(button);
+                        button.style.marginBottom = '10px';
+                        presetList.appendChild(listItem);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching presets:', error);
+                });
         }
 
         // Fetch and display presets when the page loads
