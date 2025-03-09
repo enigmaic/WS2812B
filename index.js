@@ -118,7 +118,7 @@ app.get('/animations', (req, res) => {
 
 app.get("/effects", (req, res) => {
   var effectNames = Object.keys(effects)
-  res.send(animationNames)
+  res.send(effectNames)
 })
 
 app.get("/effect/:effect", async (req, res) => {
