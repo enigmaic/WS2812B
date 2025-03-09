@@ -241,9 +241,9 @@ async function renderLEDEffect(effect) {
           let hueOffset = (hue + (i * 360 / NUM_LEDS)) % 360;
           colorArray[i] = hsvToRgb(hueOffset, 1, 1);
         }
-        channel.render(); 
         hue = (hue + 1) % 360; 
         await wait(50)
+        ws281x.render();
       }
     }
   };
