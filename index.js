@@ -257,8 +257,6 @@ async function renderLEDEffect(effect) {
   }
 }
 
-renderLEDEffect["Rainbow"]()
-
 
 function hsvToRgb(h, s, v) {
   let f = (n, k = (n + h / 60) % 6) =>
