@@ -1,9 +1,10 @@
 var ws281x = require('rpi-ws281x-native');
 
-var NUM_LEDS = 255,
-    pixelData = new Uint32Array(NUM_LEDS);
+var NUM_LEDS = 255;
 
-ws281x.init(NUM_LEDS);
+const channel = ws281x(NUM_LEDS, { stripType: 'ws2812' });
+
+var pixelData = channel.array;
 
 // ---- trap the SIGINT and reset before exit
 process.on('SIGINT', function () {
