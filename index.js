@@ -241,7 +241,7 @@ async function renderLEDEffect(effect) {
   };
 
   if (effects[effect] && activeEffect != effect) {
-    childProcess.kill()
+    childProcess ? childProcess.kill() : null;
     activeEffect = effect;
     childProcess = spawn("node", ["rainbow.js"])
   } else if (effects[effect] && activeEffect == effect) {
